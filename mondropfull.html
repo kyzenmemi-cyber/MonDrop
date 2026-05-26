@@ -1,0 +1,3056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MonDrop — Open Cases. Win Gold.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #050507;
+  --deep: #0a0a0f;
+  --surface: #0f0f18;
+  --card: #13131f;
+  --card2: #1a1a28;
+  --border: #2a2a40;
+  --amber: #f5a623;
+  --gold: #ffd700;
+  --gold2: #ffb300;
+  --gold-glow: rgba(255,215,0,0.35);
+  --amber-glow: rgba(245,166,35,0.3);
+  --text: #e8e8f0;
+  --muted: #888899;
+  --rare: #9b59b6;
+  --epic: #3498db;
+  --legendary: #f39c12;
+  --common: #7f8c8d;
+  --uncommon: #2ecc71;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--black);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* GRAIN OVERLAY */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.4;
+}
+
+/* GEOMETRIC BG PATTERN */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(5,5,7,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(245,166,35,0.15);
+  padding:0 2rem;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  cursor:pointer;
+  text-shadow:none;
+}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:0.95rem;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  transition:color 0.2s;
+  cursor:pointer;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--amber);}
+.nav-right{display:flex;gap:1rem;align-items:center;}
+.balance-display{
+  background:rgba(255,215,0,0.08);
+  border:1px solid rgba(255,215,0,0.2);
+  border-radius:6px;
+  padding:6px 14px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.9rem;
+  color:var(--gold);
+  display:none;
+}
+.btn{
+  padding:8px 20px;
+  border-radius:6px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:0.9rem;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  border:none;
+  transition:all 0.2s;
+}
+.btn-amber{
+  background:linear-gradient(135deg,var(--amber),var(--gold2));
+  color:#000;
+}
+.btn-amber:hover{
+  box-shadow:0 0 20px var(--amber-glow);
+  transform:translateY(-1px);
+}
+.btn-outline{
+  background:transparent;
+  border:1px solid var(--amber);
+  color:var(--amber);
+}
+.btn-outline:hover{background:rgba(245,166,35,0.1);}
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber);}
+
+/* PAGES */
+.page{display:none;padding-top:64px;min-height:100vh;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ========== HOME PAGE ========== */
+#page-home .hero{
+  min-height:calc(100vh - 64px);
+  display:flex;align-items:center;
+  position:relative;
+  overflow:hidden;
+  padding:4rem 2rem;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 70% 50%,rgba(245,166,35,0.08) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%,rgba(255,215,0,0.05) 0%,transparent 60%);
+}
+.hero-content{
+  max-width:600px;
+  z-index:2;
+  padding:2rem;
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(245,166,35,0.1);
+  border:1px solid rgba(245,166,35,0.3);
+  border-radius:4px;
+  padding:4px 14px;
+  font-size:0.75rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--amber);
+  margin-bottom:1.5rem;
+}
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,8vw,6.5rem);
+  line-height:0.95;
+  letter-spacing:2px;
+  margin-bottom:1.5rem;
+}
+.hero h1 .line1{
+  display:block;
+  background:linear-gradient(135deg,#fff 0%,#ccc 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero h1 .line2{
+  display:block;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--amber) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{
+  color:var(--muted);
+  font-size:1.1rem;
+  line-height:1.7;
+  margin-bottom:2.5rem;
+  font-weight:500;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-hero{
+  padding:14px 36px;
+  font-size:1.1rem;
+  border-radius:8px;
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:2px;
+  cursor:pointer;
+  border:none;
+  transition:all 0.25s;
+}
+.btn-hero-primary{
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  color:#000;
+  box-shadow:0 4px 24px rgba(245,166,35,0.4);
+}
+.btn-hero-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 40px rgba(245,166,35,0.6);
+}
+.btn-hero-secondary{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.15);
+  color:var(--text);
+  backdrop-filter:blur(10px);
+}
+.btn-hero-secondary:hover{border-color:var(--amber);color:var(--amber);}
+
+/* HERO CASE DISPLAY */
+.hero-visual{
+  position:absolute;right:5%;top:50%;transform:translateY(-50%);
+  z-index:2;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-case-wrap{
+  position:relative;
+  width:320px;height:320px;
+}
+.hero-case-glow{
+  position:absolute;inset:-40px;
+  background:radial-gradient(circle,rgba(245,166,35,0.3) 0%,transparent 70%);
+  animation:pulseGlow 3s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{opacity:0.5;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.1);}
+}
+.hero-case-img{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.case-3d{
+  width:220px;height:220px;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  border-radius:16px;
+  border:2px solid var(--amber);
+  box-shadow:0 0 40px rgba(245,166,35,0.4),inset 0 0 40px rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  gap:0.5rem;
+  animation:float 4s ease-in-out infinite;
+  position:relative;
+  overflow:hidden;
+}
+.case-3d::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,215,0,0.1) 0%,transparent 50%,rgba(245,166,35,0.05) 100%);
+}
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(-2deg);}
+  50%{transform:translateY(-15px) rotate(2deg);}
+}
+.case-icon{font-size:5rem;filter:drop-shadow(0 0 20px rgba(255,215,0,0.6));}
+.case-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:3px;
+  color:var(--gold);
+}
+
+/* MARQUEE */
+.marquee-wrap{
+  background:linear-gradient(90deg,var(--deep) 0%,rgba(245,166,35,0.05) 50%,var(--deep) 100%);
+  border-top:1px solid rgba(245,166,35,0.1);
+  border-bottom:1px solid rgba(245,166,35,0.1);
+  overflow:hidden;
+  padding:12px 0;
+  position:relative;
+}
+.marquee-label{
+  position:absolute;left:0;top:0;bottom:0;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  color:#000;
+  font-weight:700;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:0 20px;
+  display:flex;align-items:center;
+  z-index:10;
+  white-space:nowrap;
+}
+.marquee-track{
+  display:flex;
+  gap:2rem;
+  animation:marqueeAnim 30s linear infinite;
+  padding-left:130px;
+  white-space:nowrap;
+}
+@keyframes marqueeAnim{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+.marquee-item{
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.85rem;font-weight:600;
+  padding:4px 16px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:4px;
+  white-space:nowrap;
+}
+.marquee-item .m-user{color:var(--muted);}
+.marquee-item .m-gold{color:var(--gold);font-family:'Share Tech Mono',monospace;}
+.marquee-item .m-dot{color:var(--amber);}
+.marquee-item.big-win{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);}
+
+/* STATS BAR */
+.stats-bar{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:2rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+  text-align:center;
+}
+.stat-item{}
+.stat-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;
+}
+.stat-label{
+  font-size:0.8rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:600;
+}
+
+/* FEATURED CASES */
+.section{padding:4rem 2rem;}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2rem;
+}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.2rem;
+  letter-spacing:3px;
+  position:relative;
+}
+.section-title::after{
+  content:'';
+  position:absolute;bottom:-6px;left:0;
+  width:60%;height:2px;
+  background:linear-gradient(90deg,var(--amber),transparent);
+}
+.section-subtitle{
+  color:var(--muted);
+  font-size:0.85rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:600;
+}
+
+/* CASE CARDS */
+.cases-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1.5rem;
+}
+.case-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.3s;
+  position:relative;
+}
+.case-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(245,166,35,0.05) 0%,transparent 60%);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.case-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(245,166,35,0.5);
+  box-shadow:0 8px 40px rgba(245,166,35,0.2),0 0 0 1px rgba(245,166,35,0.1);
+}
+.case-card:hover::before{opacity:1;}
+.case-card-img{
+  background:linear-gradient(135deg,#1a1a2e,#0f0f1a);
+  padding:2rem;
+  display:flex;align-items:center;justify-content:center;
+  height:160px;
+  position:relative;
+  overflow:hidden;
+}
+.case-card-img::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 100%,rgba(245,166,35,0.15) 0%,transparent 60%);
+}
+.case-card-icon{font-size:4rem;filter:drop-shadow(0 0 12px rgba(255,215,0,0.5));}
+.case-card-body{padding:1rem;}
+.case-card-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.2rem;
+  letter-spacing:2px;
+  margin-bottom:0.3rem;
+}
+.case-card-price{
+  font-family:'Share Tech Mono',monospace;
+  font-size:1rem;
+  color:var(--gold);
+  display:flex;align-items:center;gap:0.3rem;
+}
+.case-card-badge{
+  position:absolute;top:10px;right:10px;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  color:#000;
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:3px;
+}
+
+/* ========== CASES PAGE ========== */
+.filters-bar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:1.5rem 2rem;
+  display:flex;gap:1rem;align-items:center;flex-wrap:wrap;
+}
+.filter-chip{
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:6px 14px;
+  font-size:0.8rem;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.2s;
+  color:var(--muted);
+}
+.filter-chip:hover,.filter-chip.active{
+  background:rgba(245,166,35,0.1);
+  border-color:var(--amber);
+  color:var(--amber);
+}
+.filter-select{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:6px 14px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:0.85rem;
+  color:var(--text);
+  cursor:pointer;
+  outline:none;
+}
+.filter-select:focus{border-color:var(--amber);}
+
+/* ========== CASE OPENING PAGE ========== */
+#page-open{
+  background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(245,166,35,0.06) 0%,transparent 70%);
+}
+.open-header{
+  text-align:center;
+  padding:3rem 2rem 2rem;
+}
+.open-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3rem;
+  letter-spacing:4px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.open-case-info{
+  display:flex;align-items:center;justify-content:center;gap:2rem;
+  flex-wrap:wrap;
+  margin-top:1rem;
+}
+.open-case-preview{
+  display:flex;align-items:center;gap:1rem;
+}
+.open-case-thumb{
+  width:60px;height:60px;
+  background:linear-gradient(135deg,#1a1a2e,#0f0f1a);
+  border:2px solid var(--amber);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+}
+.open-case-details .case-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.3rem;
+  letter-spacing:2px;
+}
+.open-case-details .case-price{
+  font-family:'Share Tech Mono',monospace;
+  color:var(--gold);
+  font-size:0.9rem;
+}
+
+/* REEL CONTAINER */
+.reel-container{
+  position:relative;
+  overflow:hidden;
+  margin:2rem auto;
+  max-width:900px;
+  padding:0 2rem;
+}
+.reel-window{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:12px;
+  overflow:hidden;
+  height:130px;
+  position:relative;
+}
+.reel-window::before,
+.reel-window::after{
+  content:'';
+  position:absolute;top:0;bottom:0;width:140px;z-index:10;pointer-events:none;
+}
+.reel-window::before{
+  left:0;
+  background:linear-gradient(90deg,var(--black) 0%,transparent 100%);
+}
+.reel-window::after{
+  right:0;
+  background:linear-gradient(-90deg,var(--black) 0%,transparent 100%);
+}
+.reel-indicator{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:3px;
+  background:linear-gradient(180deg,transparent,var(--amber),transparent);
+  z-index:20;
+  pointer-events:none;
+}
+.reel-indicator::before,.reel-indicator::after{
+  content:'';
+  position:absolute;left:50%;transform:translateX(-50%);
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+}
+.reel-indicator::before{top:0;border-top:10px solid var(--amber);}
+.reel-indicator::after{bottom:0;border-bottom:10px solid var(--amber);}
+.reel-track{
+  display:flex;
+  align-items:center;
+  height:100%;
+  gap:0;
+  will-change:transform;
+  transition:none;
+}
+.reel-item{
+  min-width:130px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0.3rem;
+  border-right:1px solid rgba(255,255,255,0.05);
+  flex-shrink:0;
+  position:relative;
+  overflow:hidden;
+}
+.reel-item::before{
+  content:'';
+  position:absolute;inset:0;
+  opacity:0.08;
+}
+.reel-item.common::before{background:var(--common);}
+.reel-item.uncommon::before{background:var(--uncommon);}
+.reel-item.rare::before{background:var(--epic);}
+.reel-item.epic::before{background:var(--rare);}
+.reel-item.legendary::before{background:var(--legendary);}
+
+.reel-item-icon{font-size:2.2rem;}
+.reel-item-amount{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.9rem;
+  font-weight:700;
+}
+.reel-item.common .reel-item-amount{color:#9fa8a3;}
+.reel-item.uncommon .reel-item-amount{color:var(--uncommon);}
+.reel-item.rare .reel-item-amount{color:var(--epic);}
+.reel-item.epic .reel-item-amount{color:var(--rare);}
+.reel-item.legendary .reel-item-amount{color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,0.8);}
+
+.reel-item-label{
+  font-size:0.65rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* OPEN BUTTON AREA */
+.open-controls{
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
+  padding:1rem 2rem;
+}
+.btn-open{
+  width:260px;
+  padding:16px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--amber),var(--gold),var(--amber));
+  background-size:200% auto;
+  color:#000;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.3s;
+  box-shadow:0 4px 30px rgba(245,166,35,0.4);
+  position:relative;
+  overflow:hidden;
+}
+.btn-open::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);
+  transform:translateX(-100%);
+  transition:transform 0.5s;
+}
+.btn-open:hover::before{transform:translateX(100%);}
+.btn-open:hover{
+  background-position:right center;
+  box-shadow:0 8px 50px rgba(245,166,35,0.7);
+  transform:translateY(-2px);
+}
+.btn-open:disabled{
+  opacity:0.5;cursor:not-allowed;transform:none;
+  box-shadow:none;
+}
+.open-sub-controls{display:flex;gap:1rem;display:none;}
+.btn-open-again{
+  padding:10px 24px;
+  background:rgba(245,166,35,0.1);
+  border:1px solid var(--amber);
+  color:var(--amber);
+  border-radius:8px;
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-open-again:hover{background:rgba(245,166,35,0.2);}
+.btn-sell{
+  padding:10px 24px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:8px;
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-sell:hover{border-color:var(--amber);color:var(--amber);}
+
+/* RESULT DISPLAY */
+.result-display{
+  display:none;
+  text-align:center;
+  padding:2rem;
+  animation:resultReveal 0.5s ease-out;
+}
+@keyframes resultReveal{
+  from{opacity:0;transform:scale(0.8) translateY(20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.result-card{
+  display:inline-block;
+  background:var(--card);
+  border:2px solid var(--amber);
+  border-radius:16px;
+  padding:2rem 3rem;
+  box-shadow:0 0 60px rgba(245,166,35,0.3);
+  position:relative;
+  overflow:hidden;
+}
+.result-card.legendary-result{
+  border-color:var(--gold);
+  box-shadow:0 0 80px rgba(255,215,0,0.5),0 0 160px rgba(255,215,0,0.2);
+  animation:legendaryPulse 1s ease-in-out infinite alternate;
+}
+@keyframes legendaryPulse{
+  from{box-shadow:0 0 60px rgba(255,215,0,0.4),0 0 120px rgba(255,215,0,0.2);}
+  to{box-shadow:0 0 100px rgba(255,215,0,0.7),0 0 200px rgba(255,215,0,0.3);}
+}
+.result-icon{font-size:4rem;display:block;margin-bottom:0.5rem;}
+.result-label{
+  font-size:0.75rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.3rem;
+}
+.result-amount{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.5rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.result-rarity{
+  font-size:0.8rem;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:0.3rem;
+}
+
+/* DROP CHANCES TABLE */
+.drop-table{
+  max-width:500px;
+  margin:0 auto;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.drop-table-header{
+  background:rgba(245,166,35,0.08);
+  border-bottom:1px solid var(--border);
+  padding:1rem 1.5rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:2px;
+  color:var(--amber);
+}
+.drop-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0.8rem 1.5rem;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:background 0.2s;
+}
+.drop-row:hover{background:rgba(255,255,255,0.02);}
+.drop-row:last-child{border-bottom:none;}
+.drop-gold{
+  font-family:'Share Tech Mono',monospace;
+  font-size:1rem;
+}
+.drop-pct{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:1px;
+}
+.drop-bar{
+  height:4px;
+  border-radius:2px;
+  margin-top:4px;
+}
+
+/* ========== PROFILE PAGE ========== */
+.profile-header{
+  background:linear-gradient(135deg,var(--surface) 0%,var(--card) 100%);
+  border-bottom:1px solid var(--border);
+  padding:3rem 2rem;
+  display:flex;align-items:center;gap:2rem;
+  flex-wrap:wrap;
+}
+.profile-avatar{
+  width:90px;height:90px;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;
+  font-family:'Bebas Neue',sans-serif;
+  color:#000;
+  font-weight:700;
+  flex-shrink:0;
+}
+.profile-info .username{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;
+  letter-spacing:3px;
+}
+.profile-info .user-email{color:var(--muted);font-size:0.9rem;margin-top:0.2rem;}
+.profile-stats{
+  display:flex;gap:2rem;flex-wrap:wrap;margin-top:0.8rem;
+}
+.profile-stat .num{
+  font-family:'Share Tech Mono',monospace;
+  color:var(--gold);
+  font-size:1.1rem;
+  font-weight:700;
+}
+.profile-stat .lbl{
+  font-size:0.75rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.profile-balance{
+  margin-left:auto;
+  text-align:right;
+}
+.balance-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3rem;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.balance-lbl{
+  font-size:0.8rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* INVENTORY */
+.inventory-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:1rem;
+}
+.inv-item{
+  background:var(--card);
+  border-radius:8px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.2s;
+  border:2px solid transparent;
+}
+.inv-item:hover{transform:translateY(-2px);}
+.inv-item.common{border-color:var(--common);}
+.inv-item.uncommon{border-color:var(--uncommon);}
+.inv-item.rare{border-color:var(--epic);}
+.inv-item.epic{border-color:var(--rare);}
+.inv-item.legendary{
+  border-color:var(--gold);
+  box-shadow:0 0 12px rgba(255,215,0,0.3);
+  animation:legendaryBorder 2s linear infinite;
+}
+@keyframes legendaryBorder{
+  0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.3);}
+  50%{box-shadow:0 0 20px rgba(255,215,0,0.6);}
+}
+.inv-item-img{
+  background:rgba(0,0,0,0.3);
+  height:100px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;
+}
+.inv-item-info{padding:0.5rem;}
+.inv-item-gold{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.9rem;
+  color:var(--gold);
+  font-weight:700;
+}
+.inv-item-rarity{
+  font-size:0.65rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.inv-controls{
+  display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;
+  align-items:center;
+}
+.inv-total{
+  margin-left:auto;
+  font-family:'Share Tech Mono',monospace;
+  color:var(--gold);
+  font-size:1rem;
+}
+.withdraw-note{
+  background:rgba(245,166,35,0.06);
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:8px;
+  padding:1rem 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1.5rem;
+  font-size:0.9rem;
+  color:var(--muted);
+}
+.withdraw-note .icon{font-size:1.5rem;}
+
+/* TRANSACTION TABLE */
+.tx-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.9rem;
+}
+.tx-table th{
+  text-align:left;
+  padding:0.8rem 1rem;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid var(--border);
+  font-size:0.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:600;
+}
+.tx-table td{
+  padding:0.8rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  color:var(--text);
+}
+.tx-table tr:hover td{background:rgba(255,255,255,0.02);}
+.tx-type{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:3px;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.tx-type.open{background:rgba(245,166,35,0.1);color:var(--amber);}
+.tx-type.sell{background:rgba(46,204,113,0.1);color:var(--uncommon);}
+.tx-type.topup{background:rgba(52,152,219,0.1);color:var(--epic);}
+.tx-type.withdraw{background:rgba(155,89,182,0.1);color:var(--rare);}
+.tx-amount.pos{color:var(--uncommon);}
+.tx-amount.neg{color:#e74c3c;}
+
+/* ========== PAYMENT PAGE ========== */
+.payment-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1.5rem;
+  padding:2rem;
+}
+.pkg-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:2rem;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.pkg-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--amber),var(--gold));
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.pkg-card:hover,.pkg-card.selected{
+  border-color:rgba(245,166,35,0.5);
+  transform:translateY(-4px);
+  box-shadow:0 8px 30px rgba(245,166,35,0.15);
+}
+.pkg-card:hover::before,.pkg-card.selected::before{opacity:1;}
+.pkg-card.popular{
+  border-color:rgba(245,166,35,0.4);
+}
+.pkg-badge{
+  position:absolute;top:12px;right:12px;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  color:#000;
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:1px;
+  padding:3px 8px;
+  border-radius:3px;
+  text-transform:uppercase;
+}
+.pkg-icon{font-size:2.5rem;margin-bottom:0.8rem;}
+.pkg-mnt{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.2rem;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.pkg-togrog{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.9rem;
+  color:var(--muted);
+  margin-top:0.3rem;
+}
+.pkg-rate{
+  font-size:0.75rem;
+  color:var(--muted);
+  margin-top:0.3rem;
+  letter-spacing:1px;
+}
+
+/* Custom topup section */
+.custom-topup{
+  max-width:500px;
+  margin:0 auto 2rem;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1.5rem;
+}
+.custom-topup h3{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.3rem;
+  letter-spacing:2px;
+  margin-bottom:1rem;
+}
+.input-group{
+  display:flex;gap:0.5rem;
+  margin-bottom:0.5rem;
+}
+.input-field{
+  flex:1;
+  background:var(--deep);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:10px 14px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+}
+.input-field:focus{border-color:var(--amber);}
+.input-hint{font-size:0.8rem;color:var(--muted);}
+
+/* ========== PROVABLY FAIR PAGE ========== */
+.fair-section{
+  max-width:700px;
+  margin:0 auto;
+  padding:3rem 2rem;
+}
+.fair-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:2rem;
+  margin-bottom:1.5rem;
+}
+.fair-card h3{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;
+  letter-spacing:2px;
+  color:var(--amber);
+  margin-bottom:1rem;
+}
+.fair-card p{
+  color:var(--muted);
+  line-height:1.8;
+  font-size:0.95rem;
+}
+.hash-display{
+  background:var(--deep);
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:8px;
+  padding:1rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.85rem;
+  color:var(--amber);
+  word-break:break-all;
+  margin:1rem 0;
+}
+.verify-result{
+  margin-top:1rem;
+  padding:1rem;
+  background:rgba(46,204,113,0.08);
+  border:1px solid rgba(46,204,113,0.2);
+  border-radius:6px;
+  color:var(--uncommon);
+  font-size:0.9rem;
+  display:none;
+}
+
+/* ========== MODALS ========== */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(8px);
+  z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+  display:none;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--card);
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:16px;
+  width:100%;
+  max-width:440px;
+  padding:2.5rem;
+  position:relative;
+  animation:modalIn 0.3s ease-out;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(0.9) translateY(-20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;
+  color:var(--muted);font-size:1.5rem;
+  cursor:pointer;transition:color 0.2s;
+  line-height:1;
+}
+.modal-close:hover{color:var(--text);}
+.modal-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-align:center;
+  margin-bottom:0.3rem;
+}
+.modal-subtitle{
+  text-align:center;color:var(--muted);font-size:0.9rem;
+  margin-bottom:2rem;
+}
+.form-group{margin-bottom:1rem;}
+.form-label{
+  display:block;
+  font-size:0.8rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.5rem;
+  font-weight:600;
+}
+.form-input{
+  width:100%;
+  background:var(--deep);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:12px 16px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+}
+.form-input:focus{border-color:var(--amber);}
+.btn-full{width:100%;padding:12px;margin-top:0.5rem;}
+.modal-divider{
+  display:flex;align-items:center;gap:1rem;
+  margin:1.5rem 0;
+}
+.modal-divider::before,.modal-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.modal-divider span{color:var(--muted);font-size:0.8rem;white-space:nowrap;}
+.btn-google{
+  width:100%;
+  padding:12px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:8px;
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:0.8rem;
+}
+.btn-google:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);}
+.modal-switch{
+  text-align:center;margin-top:1.5rem;
+  font-size:0.9rem;color:var(--muted);
+}
+.modal-switch a{color:var(--amber);cursor:pointer;text-decoration:none;}
+.modal-switch a:hover{text-decoration:underline;}
+
+/* PAYMENT CONFIRM MODAL */
+.payment-modal .modal-icon{
+  text-align:center;font-size:3rem;margin-bottom:1rem;
+}
+.payment-modal .confirm-amount{
+  text-align:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:0.3rem;
+}
+.payment-modal .confirm-label{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;}
+
+/* TOAST */
+.toast-container{
+  position:fixed;top:80px;right:20px;
+  z-index:3000;
+  display:flex;flex-direction:column;gap:0.5rem;
+}
+.toast{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:1rem 1.5rem;
+  display:flex;align-items:center;gap:0.8rem;
+  font-size:0.9rem;
+  font-weight:600;
+  min-width:280px;
+  animation:toastIn 0.3s ease-out;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(100%);}
+  to{opacity:1;transform:translateX(0);}
+}
+.toast.success{border-color:rgba(46,204,113,0.4);color:var(--uncommon);}
+.toast.error{border-color:rgba(231,76,60,0.4);color:#e74c3c;}
+.toast.info{border-color:rgba(245,166,35,0.4);color:var(--amber);}
+
+/* PARTICLES */
+#particles{
+  position:fixed;inset:0;pointer-events:none;z-index:100;
+  display:none;
+}
+#particles canvas{position:absolute;inset:0;}
+
+/* FLASH OVERLAY */
+.flash-overlay{
+  position:fixed;inset:0;
+  pointer-events:none;z-index:200;
+  opacity:0;
+  transition:opacity 0.1s;
+}
+.flash-overlay.active{
+  animation:flashAnim 0.6s ease-out forwards;
+}
+@keyframes flashAnim{
+  0%{opacity:0.8;}
+  100%{opacity:0;}
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero-visual{display:none;}
+  nav .nav-links{display:none;}
+  .stats-bar{grid-template-columns:1fr;}
+  .profile-balance{margin-left:0;}
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--deep);}
+::-webkit-scrollbar-thumb{background:rgba(245,166,35,0.3);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(245,166,35,0.5);}
+
+/* GLASS CARD */
+.glass{
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.07);
+}
+
+/* MOBILE NAV BURGER ICON */
+.nav-burger{
+  display:none;
+  flex-direction:column;gap:5px;cursor:pointer;padding:4px;
+}
+.nav-burger span{
+  width:24px;height:2px;background:var(--amber);border-radius:2px;transition:all 0.3s;
+}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+@media(max-width:768px){
+  .nav-burger{display:flex;}
+}
+
+/* ACCOUNT MENU */
+.account-menu-wrap{
+  position:relative;
+  display:none; /* shown by JS when logged in */
+}
+.account-btn{
+  display:flex;align-items:center;gap:0.5rem;
+  background:rgba(255,215,0,0.08);
+  border:1px solid rgba(255,215,0,0.2);
+  border-radius:8px;
+  padding:6px 12px;
+  cursor:pointer;
+  transition:all 0.2s;
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  font-weight:600;
+  font-size:0.9rem;
+  letter-spacing:0.5px;
+}
+.account-btn:hover{border-color:var(--amber);background:rgba(255,215,0,0.12);}
+.account-avatar-sm{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;
+  font-weight:700;
+  color:#000;
+  flex-shrink:0;
+}
+.account-chevron{
+  font-size:0.6rem;
+  color:var(--muted);
+  transition:transform 0.2s;
+  margin-left:2px;
+}
+.account-menu-wrap.open .account-chevron{transform:rotate(180deg);}
+.account-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--card);
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:10px;
+  min-width:220px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  z-index:1100;
+  overflow:hidden;
+  display:none;
+  animation:dropIn 0.18s ease-out;
+}
+@keyframes dropIn{
+  from{opacity:0;transform:translateY(-8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.account-menu-wrap.open .account-dropdown{display:block;}
+.acct-header{
+  padding:1rem 1rem 0.75rem;
+  border-bottom:1px solid var(--border);
+  background:rgba(255,215,0,0.04);
+}
+.acct-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:2px;
+  color:var(--text);
+}
+.acct-email{
+  font-size:0.78rem;
+  color:var(--muted);
+  margin-top:1px;
+}
+.acct-balance{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.85rem;
+  color:var(--gold);
+  margin-top:0.4rem;
+}
+.acct-menu-items{padding:0.4rem 0;}
+.acct-item{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:0.65rem 1rem;
+  cursor:pointer;
+  font-size:0.9rem;
+  font-weight:600;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  transition:all 0.15s;
+}
+.acct-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.acct-item.danger{color:#e74c3c;}
+.acct-item.danger:hover{background:rgba(231,76,60,0.08);color:#ff6b6b;}
+.acct-item .acct-icon{font-size:1rem;width:18px;text-align:center;}
+.acct-divider{height:1px;background:var(--border);margin:0.3rem 0;}
+
+/* MOBILE DRAWER */
+.mobile-drawer-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(4px);
+  z-index:998;
+  display:none;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.mobile-drawer-overlay.open{display:block;opacity:1;}
+.mobile-drawer{
+  position:fixed;top:0;right:0;bottom:0;
+  width:min(300px,85vw);
+  background:var(--surface);
+  border-left:1px solid rgba(245,166,35,0.15);
+  z-index:999;
+  transform:translateX(100%);
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+}
+.mobile-drawer.open{transform:translateX(0);}
+.drawer-header{
+  padding:1.2rem 1.2rem 1rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.drawer-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.drawer-close{
+  background:none;border:none;
+  color:var(--muted);font-size:1.4rem;
+  cursor:pointer;line-height:1;padding:4px;
+  transition:color 0.2s;
+}
+.drawer-close:hover{color:var(--text);}
+.drawer-user{
+  padding:1rem 1.2rem;
+  background:rgba(255,215,0,0.04);
+  border-bottom:1px solid var(--border);
+  display:none;
+}
+.drawer-user-row{display:flex;align-items:center;gap:0.75rem;}
+.drawer-avatar{
+  width:40px;height:40px;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;
+  color:#000;
+  font-weight:700;
+  flex-shrink:0;
+}
+.drawer-user-name{
+  font-weight:700;
+  font-size:0.95rem;
+  letter-spacing:0.5px;
+}
+.drawer-user-balance{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.8rem;
+  color:var(--gold);
+  margin-top:2px;
+}
+.drawer-nav{padding:0.5rem 0;flex:1;}
+.drawer-nav-item{
+  display:flex;align-items:center;gap:0.9rem;
+  padding:0.9rem 1.2rem;
+  cursor:pointer;
+  color:var(--muted);
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  transition:all 0.15s;
+  border-left:3px solid transparent;
+}
+.drawer-nav-item:hover,.drawer-nav-item.active{
+  color:var(--amber);
+  background:rgba(245,166,35,0.06);
+  border-left-color:var(--amber);
+}
+.drawer-nav-item .d-icon{font-size:1.1rem;width:20px;text-align:center;}
+.drawer-footer{
+  padding:1rem 1.2rem;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:0.6rem;
+  flex-shrink:0;
+}
+.drawer-auth-btns{display:flex;gap:0.6rem;}
+.drawer-auth-btns .btn{flex:1;text-align:center;}
+/* WITHDRAW OPTIONS */
+.withdraw-option{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:0.9rem 1rem;
+  margin-bottom:0.6rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.withdraw-option:hover{border-color:var(--amber);background:rgba(245,166,35,0.06);}
+.withdraw-option.disabled{opacity:0.4;cursor:not-allowed;}
+.wo-gold{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:2px;color:var(--text);}
+.wo-note{font-size:0.8rem;color:var(--muted);margin-top:2px;}
+.wo-status{font-size:0.78rem;font-weight:700;letter-spacing:0.5px;}
+
+/* WITHDRAW HISTORY */
+.wd-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.8rem 1rem;
+  border-bottom:1px solid var(--border);
+}
+.wd-row:last-child{border-bottom:none;}
+.wd-status{
+  font-size:0.75rem;font-weight:700;letter-spacing:1px;
+  padding:3px 8px;border-radius:4px;text-transform:uppercase;
+}
+.wd-status.pending{background:rgba(245,166,35,0.12);color:var(--amber);}
+.wd-status.approved{background:rgba(46,204,113,0.12);color:#2ecc71;}
+.wd-status.rejected{background:rgba(231,76,60,0.12);color:#e74c3c;}
+
+/* BALANCE DISPLAY - make tappable */
+.balance-display{cursor:pointer;transition:all 0.2s;}
+.balance-display:hover{border-color:var(--gold);color:var(--gold);}
+</style>
+</head>
+<body>
+
+<!-- FLASH OVERLAY -->
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<!-- PARTICLES CANVAS -->
+<div id="particles"><canvas id="particleCanvas"></canvas></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="mobile-drawer-overlay" id="drawerOverlay" onclick="closeMobileNav()"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-logo">MON<span style="-webkit-text-fill-color:var(--amber)">DROP</span></div>
+    <button class="drawer-close" onclick="closeMobileNav()">✕</button>
+  </div>
+  <!-- User panel (shown when logged in) -->
+  <div class="drawer-user" id="drawerUser">
+    <div class="drawer-user-row">
+      <div class="drawer-avatar" id="drawerAvatar">M</div>
+      <div>
+        <div class="drawer-user-name" id="drawerUsername">Player</div>
+        <div class="drawer-user-balance" id="drawerBalance">0 G</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:1px;font-family:'Share Tech Mono',monospace" id="drawerUserId"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Nav links -->
+  <nav class="drawer-nav">
+    <div class="drawer-nav-item active" id="dnav-home" onclick="navigate('home');closeMobileNav()"><span class="d-icon">🏠</span> Home</div>
+    <div class="drawer-nav-item" id="dnav-cases" onclick="navigate('cases');closeMobileNav()"><span class="d-icon">📦</span> Cases</div>
+    <div class="drawer-nav-item" id="dnav-open" onclick="navigate('open');closeMobileNav()"><span class="d-icon">🔓</span> Open Case</div>
+    <div class="drawer-nav-item" id="dnav-profile" onclick="navigate('profile');closeMobileNav()"><span class="d-icon">👤</span> Profile</div>
+    <div class="drawer-nav-item" id="dnav-payment" onclick="navigate('payment');closeMobileNav()"><span class="d-icon">💳</span> Top Up</div>
+  </nav>
+  <!-- Footer auth -->
+  <div class="drawer-footer">
+    <div class="drawer-auth-btns" id="drawerAuthBtns">
+      <button class="btn btn-outline" onclick="openModal('login');closeMobileNav()">Log In</button>
+      <button class="btn btn-amber" onclick="openModal('signup');closeMobileNav()">Sign Up</button>
+    </div>
+    <button class="btn btn-ghost" id="drawerLogoutBtn" style="display:none;width:100%;text-align:center" onclick="logout();closeMobileNav()">🚪 Log Out</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="navigate('home')">MON<span style="color:var(--amber)">DROP</span></div>
+  <div class="nav-links">
+    <a onclick="navigate('home')" id="nav-home" class="active">Home</a>
+    <a onclick="navigate('cases')" id="nav-cases">Cases</a>
+    <a onclick="navigate('open')" id="nav-open">Open Case</a>
+    <a onclick="navigate('profile')" id="nav-profile">Profile</a>
+    <a onclick="navigate('payment')" id="nav-payment">Top Up</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-display" id="navBalance" onclick="if(state.user){navigate('payment')}else{openModal('login')}" title="Tap to top up">0 G</div>
+    <button class="btn btn-outline" id="loginBtn" onclick="openModal('login')">Log In</button>
+    <button class="btn btn-amber" id="signupBtn" onclick="openModal('signup')">Sign Up</button>
+    <div class="account-menu-wrap" id="accountMenuWrap">
+      <div class="account-btn" onclick="toggleAccountMenu()">
+        <div class="account-avatar-sm" id="accountAvatarSm">M</div>
+        <span id="accountMenuUsername">Player</span>
+        <span class="account-chevron">▼</span>
+      </div>
+      <div class="account-dropdown" id="accountDropdown">
+        <div class="acct-header">
+          <div class="acct-name" id="acctDropName">Player</div>
+          <div class="acct-email" id="acctDropEmail">user@example.com</div>
+          <div class="acct-id" id="acctDropId" style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--muted);margin-top:2px"></div>
+          <div class="acct-balance" id="acctDropBalance" style="cursor:pointer" onclick="navigate('payment');closeAccountMenu()" title="Click to top up">💰 0 G <span style="font-size:0.7rem;color:var(--amber)">+ Top Up</span></div>
+        </div>
+        <div class="acct-menu-items">
+          <div class="acct-item" onclick="navigate('profile');closeAccountMenu()"><span class="acct-icon">👤</span> My Profile</div>
+          <div class="acct-item" onclick="navigate('profile');closeAccountMenu()"><span class="acct-icon">🎒</span> My Inventory</div>
+          <div class="acct-item" onclick="navigate('payment');closeAccountMenu()"><span class="acct-icon">💳</span> Top Up Balance</div>
+          <div class="acct-divider"></div>
+          <div class="acct-item danger" onclick="logout();closeAccountMenu()"><span class="acct-icon">🚪</span> Log Out</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-burger" id="navBurger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">⚡ LIVE — 1,247 online now</div>
+      <h1>
+        <span class="line1">OPEN CASES.</span>
+        <span class="line2">WIN GOLD.</span>
+      </h1>
+      <p>Mongolia's premier Standoff 2 case opening platform. Spin the reel, reveal your fate, and convert Gold to in-game riches.</p>
+      <div class="hero-btns">
+        <button class="btn-hero btn-hero-primary" onclick="navigate('open')">🔓 Open Case</button>
+        <button class="btn-hero btn-hero-secondary" onclick="navigate('cases')">Browse Cases</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-case-wrap">
+        <div class="hero-case-glow"></div>
+        <div class="hero-case-img">
+          <div class="case-3d">
+            <div class="case-icon">🎁</div>
+            <div class="case-name">THUNDER VAULT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-label">🔴 LIVE DROPS</div>
+    <div class="marquee-track" id="marqueeTrack">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num" id="statCases">142,837</span>
+      <span class="stat-label">Cases Opened</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="statOnline">1,247</span>
+      <span class="stat-label">Users Online</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="statDrops">8,921</span>
+      <span class="stat-label">Skins Dropped Today</span>
+    </div>
+  </div>
+
+  <!-- FEATURED CASES -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Featured Cases</div>
+        <div class="section-subtitle" style="margin-top:0.5rem">More cases coming soon</div>
+      </div>
+      <button class="btn btn-outline" onclick="navigate('cases')">View All →</button>
+    </div>
+    <div class="cases-grid" id="featuredCasesGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CASES PAGE ==================== -->
+<div class="page" id="page-cases">
+  <div class="section-header" style="padding:2rem 2rem 0">
+    <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px">All Cases</div>
+  </div>
+  <div class="filters-bar">
+    <span style="font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:0.5rem">FILTER:</span>
+    <div class="filter-chip active" onclick="filterCases('all',this)">All</div>
+    <div class="filter-chip" onclick="filterCases('new',this)">New Arrivals</div>
+    <div class="filter-chip" onclick="filterCases('budget',this)">Budget &lt;3000</div>
+    <div class="filter-chip" onclick="filterCases('premium',this)">Premium</div>
+    <select class="filter-select" onchange="sortCases(this.value)">
+      <option value="default">Sort: Default</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </div>
+  <div class="section">
+    <div class="cases-grid" id="allCasesGrid"></div>
+  </div>
+</div>
+
+<!-- ==================== CASE OPEN PAGE ==================== -->
+<div class="page" id="page-open">
+  <div class="open-header">
+    <div class="open-title">OPEN CASE</div>
+    <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem">Each opening costs <span style="color:var(--gold);font-family:'Share Tech Mono',monospace">100 G</span></p>
+    <div class="open-case-info" style="margin-top:1.5rem">
+      <div class="open-case-preview">
+        <div class="open-case-thumb">🎁</div>
+        <div class="open-case-details">
+          <div class="case-title">THUNDER VAULT</div>
+          <div class="case-price">⚡ 100 G</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REEL -->
+  <div class="reel-container">
+    <div class="reel-window">
+      <div class="reel-indicator"></div>
+      <div class="reel-track" id="reelTrack"></div>
+    </div>
+  </div>
+
+  <!-- OPEN CONTROLS -->
+  <div class="open-controls">
+    <button class="btn-open" id="btnOpen" onclick="openCase()">OPEN CASE</button>
+    <div class="open-sub-controls" id="subControls">
+      <button class="btn-open-again" onclick="openCase()">🔁 Open Again</button>
+      <button class="btn-sell" onclick="sellLastItem()">💰 Sell Item</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-display" id="resultDisplay">
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon">💰</div>
+      <div class="result-label">YOU WON</div>
+      <div class="result-amount" id="resultAmount">0 GOLD</div>
+      <div class="result-rarity" id="resultRarity"></div>
+    </div>
+  </div>
+
+  <!-- DROP TABLE - dynamic per case -->
+  <div class="section" style="padding-top:2rem">
+    <div style="max-width:500px;margin:0 auto">
+      <div class="drop-table">
+        <div class="drop-table-header">🎰 Drop Probabilities</div>
+        <div id="dynamicDropTable"><!-- filled by renderDropTable() --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROFILE PAGE ==================== -->
+<div class="page" id="page-profile">
+  <div id="profileLoginNotice" style="display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:1.5rem;text-align:center;padding:2rem">
+    <div style="font-size:4rem">🔐</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px">Login Required</div>
+    <p style="color:var(--muted)">Sign in to view your profile and inventory.</p>
+    <button class="btn btn-amber" onclick="openModal('login')">Log In</button>
+  </div>
+  <div id="profileContent" style="display:none">
+    <!-- Back button -->
+    <div style="padding:1rem 2rem 0">
+      <button class="btn btn-ghost" onclick="navigate('home')" style="font-size:0.85rem">← Back to Menu</button>
+    </div>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar">M</div>
+      <div class="profile-info">
+        <div class="username" id="profileUsername">MonDropUser</div>
+        <div class="user-email" id="profileEmail">user@example.com</div>
+        <div id="profileUserId" style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--amber);margin-top:4px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:4px;padding:2px 8px;display:inline-block"></div>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="num" id="profileCasesOpened">0</div>
+            <div class="lbl">Cases Opened</div>
+          </div>
+          <div class="profile-stat">
+            <div class="num" id="profileTotalGold">0</div>
+            <div class="lbl">Total Gold Won</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-balance">
+        <div class="balance-big" id="profileBalance">0</div>
+        <div class="balance-lbl">Gold Balance</div>
+        <button class="btn btn-amber" style="margin-top:0.8rem;font-size:0.85rem" onclick="navigate('payment')">+ Top Up</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">My Inventory</div>
+        <div class="section-subtitle" style="margin-top:0.5rem" id="invCount">0 items</div>
+      </div>
+      <div class="withdraw-note">
+        <div class="icon">ℹ️</div>
+        <div>Withdraw your Gold by placing a buy order for <strong style="color:var(--amber)">USP "Corrode"</strong> on the S2 market at the required price, then upload proof.</div>
+      </div>
+      <div class="inv-controls">
+        <button class="btn btn-ghost" onclick="withdrawAll()">📤 Withdraw Gold</button>
+        <button class="btn btn-outline" onclick="sellAll()">💰 Sell All</button>
+        <div class="inv-total">Total: <span id="invTotalValue" style="color:var(--gold)">0</span> G</div>
+      </div>
+      <div class="inventory-grid" id="inventoryGrid">
+        <div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:3rem;font-size:0.9rem">No items yet. Open some cases! 🎁</div>
+      </div>
+    </div>
+
+    <!-- Withdraw History -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title" style="margin-bottom:1.5rem;font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px">Withdrawal History</div>
+      <div id="withdrawHistoryList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:0.5rem 0">
+        <div style="color:var(--muted);text-align:center;padding:2rem;font-size:0.9rem">No withdrawal history yet.</div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0">
+      <div class="section-title" style="margin-bottom:1.5rem;font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px">Transaction History</div>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:12px">
+        <table class="tx-table">
+          <thead><tr><th>Type</th><th>Description</th><th>Amount</th><th>Date</th></tr></thead>
+          <tbody id="txHistory">
+            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No transactions yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAYMENT PAGE ==================== -->
+<div class="page" id="page-payment">
+  <div style="padding:1rem 2rem 0">
+    <button class="btn btn-ghost" onclick="navigate('home')" style="font-size:0.85rem">← Back to Menu</button>
+  </div>
+  <div class="section" style="padding-bottom:0">
+    <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;text-align:center;margin-bottom:0.5rem">Top Up Gold</div>
+    <p style="text-align:center;color:var(--muted);font-size:0.95rem">Select a Gold package — send payment via Monpay QR</p>
+  </div>
+  <div class="payment-grid" id="packageGrid"></div>
+  <div style="max-width:600px;margin:0 auto 3rem;padding:0 2rem">
+    <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+      <div style="font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem;font-weight:700">📋 How It Works</div>
+      <p style="color:var(--muted);font-size:0.85rem;line-height:1.8">1. Choose a Gold package above<br>2. Scan the Monpay QR code and send the amount<br>3. In the payment description, <strong style="color:var(--amber)">type your MonDrop ID</strong><br>4. We verify your payment and add Gold to your account</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- DEPOSIT QR MODAL -->
+<div class="modal-overlay" id="depositQRModal">
+  <div class="modal" style="max-width:380px">
+    <button class="modal-close" onclick="closeModal('depositQR')">×</button>
+    <div class="modal-logo" style="font-size:1.4rem">DEPOSIT GOLD</div>
+    <div style="text-align:center;margin-bottom:1rem">
+      <div style="font-size:1.6rem;font-weight:700;color:var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:2px" id="depositGoldAmt">100 Gold</div>
+      <div style="font-family:'Share Tech Mono',monospace;color:var(--amber);font-size:1.1rem" id="depositTogrogAmt">₮5,000</div>
+    </div>
+    <!-- QR code placeholder - the monpay QR image is embedded as base64 or external -->
+    <div style="background:#fff;border-radius:12px;padding:12px;margin:0 auto 1rem;width:fit-content">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=monpay-mondrop" alt="Monpay QR" style="width:200px;height:200px;border-radius:4px" onerror="this.style.display='none';document.getElementById('qrFallback').style.display='block'">
+      <div id="qrFallback" style="display:none;width:200px;height:200px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;border-radius:4px;color:var(--amber);font-size:0.8rem;text-align:center;padding:1rem">Scan Monpay QR<br>from your app</div>
+    </div>
+    <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:8px;padding:1rem;margin-bottom:1rem">
+      <div style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">📝 Payment Description (Required)</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--amber);font-weight:700" id="depositNote">MonDrop ID: MD123456</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem">⚠️ You must type this exact ID in the description</div>
+    </div>
+    <div style="font-size:0.8rem;color:var(--muted);text-align:center;line-height:1.6">After sending payment, Gold will be added to your account within a few minutes after our team verifies it.</div>
+    <div style="font-size:0.78rem;text-align:center;margin-top:0.5rem;color:var(--muted)">Your MonDrop ID: <strong style="color:var(--gold);font-family:'Share Tech Mono',monospace" id="depositUserId">N/A</strong></div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">×</button>
+    <div class="modal-logo">MONDROP</div>
+    <div class="modal-subtitle">Sign in to your account</div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
+    </div>
+    <button class="btn btn-amber btn-full" onclick="handleLogin()">LOG IN</button>
+    <div style="text-align:right;margin-top:-4px;margin-bottom:8px">
+      <a onclick="handleForgotPassword()" style="font-size:0.8rem;color:var(--amber);cursor:pointer;opacity:0.8">Forgot password?</a>
+    </div>
+    <div class="modal-divider"><span>or continue with</span></div>
+    <button class="btn-google" onclick="handleGoogleAuth()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1L37.4 9.6C34 6.5 29.2 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.7-.2-3.4-.5-5H43.6z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.9 1.2 8 3.1L37.4 9.6C34 6.5 29.2 4.5 24 4.5c-7.6 0-14.1 4.3-17.7 10.2z"/><path fill="#4CAF50" d="M24 45.5c5.1 0 9.8-1.9 13.3-5L31.3 36c-2 1.4-4.5 2.2-7.3 2.2-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C8 40.8 15.4 45.5 24 45.5z"/><path fill="#1976D2" d="M43.5 25c0-1.7-.2-3.4-.5-5H24v8h11.3c-.8 2.1-2.2 3.9-4 5.1l5.9 4.7C41.2 34.7 43.5 30.1 43.5 25z"/></svg>
+      Continue with Google
+    </button>
+    <div class="modal-switch">Don't have an account? <a onclick="switchModal('login','signup')">Sign up</a></div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup')">×</button>
+    <div class="modal-logo">MONDROP</div>
+    <div class="modal-subtitle">Create your account</div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-input" id="signupUsername" placeholder="MonDropPlayer">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="signupEmail" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="signupPassword" placeholder="Min 8 characters">
+    </div>
+    <button class="btn btn-amber btn-full" onclick="handleSignup()">CREATE ACCOUNT</button>
+    <div class="modal-divider"><span>or continue with</span></div>
+    <button class="btn-google" onclick="handleGoogleAuth()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1L37.4 9.6C34 6.5 29.2 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.7-.2-3.4-.5-5H43.6z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.9 1.2 8 3.1L37.4 9.6C34 6.5 29.2 4.5 24 4.5c-7.6 0-14.1 4.3-17.7 10.2z"/><path fill="#4CAF50" d="M24 45.5c5.1 0 9.8-1.9 13.3-5L31.3 36c-2 1.4-4.5 2.2-7.3 2.2-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C8 40.8 15.4 45.5 24 45.5z"/><path fill="#1976D2" d="M43.5 25c0-1.7-.2-3.4-.5-5H24v8h11.3c-.8 2.1-2.2 3.9-4 5.1l5.9 4.7C41.2 34.7 43.5 30.1 43.5 25z"/></svg>
+      Continue with Google
+    </button>
+    <div class="modal-switch">Already have an account? <a onclick="switchModal('signup','login')">Log in</a></div>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="withdrawModal">
+  <div class="modal" style="max-width:420px">
+    <button class="modal-close" onclick="closeModal('withdraw')">×</button>
+    <div class="modal-logo" style="font-size:1.4rem">WITHDRAW GOLD</div>
+
+    <!-- Step 1: Choose tier -->
+    <div id="withdrawStep1">
+      <div class="modal-subtitle" style="margin-bottom:1.2rem">Select a withdrawal amount. You must place a buy order for <strong style="color:var(--amber)">USP "Corrode"</strong> at the exact price shown.</div>
+      <div id="withdrawOptionsContainer"></div>
+    </div>
+
+    <!-- Step 2: Upload proof -->
+    <div id="withdrawStep2" style="display:none">
+      <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.25);border-radius:8px;padding:1rem;margin-bottom:1rem">
+        <div style="font-weight:700;color:var(--gold);margin-bottom:0.3rem" id="withdrawOrderGold">100 Gold</div>
+        <div style="font-size:0.85rem;color:var(--text)">Place a buy order for <strong style="color:var(--amber)">USP "Corrode"</strong> at exactly <strong style="color:var(--gold)" id="withdrawOrderPrice">125.6G</strong> on the S2 market.</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem" id="withdrawOrderNote"></div>
+      </div>
+      <!-- Image showing how to place order -->
+      <div style="background:var(--deep);border-radius:8px;overflow:hidden;margin-bottom:1rem;border:1px solid var(--border)">
+        <div style="padding:0.6rem 0.8rem;background:rgba(255,255,255,0.03);font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700">📖 How to place an order in S2</div>
+        <div style="padding:0.8rem;font-size:0.82rem;color:var(--muted);line-height:1.7">
+          1. Open Standoff 2 → Market<br>
+          2. Search <strong style="color:var(--text)">USP "Corrode"</strong><br>
+          3. Tap the skin → tap area shown below<br>
+          4. Take screenshot → show SS below ↓<br>
+          <div style="margin-top:0.5rem;padding:0.5rem;background:rgba(245,166,35,0.06);border-radius:4px;color:var(--amber);font-size:0.78rem">🔽 Tap price area in market and place buy order at exact Gold amount shown above</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Screenshot of Your Order</label>
+        <input type="file" class="form-input" id="withdrawProofFile" accept="image/*" style="padding:0.5rem">
+      </div>
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn btn-ghost" onclick="document.getElementById('withdrawStep1').style.display='block';document.getElementById('withdrawStep2').style.display='none'">← Back</button>
+        <button class="btn btn-amber" style="flex:1" onclick="submitWithdraw()">SUBMIT ORDER ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SUPABASE SDK ═══════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG — Replace with your credentials
+// ============================================================
+const SUPABASE_URL  = 'https://yeyswrtpuhmcvhhsxhtq.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlleXN3cnRwdWhtY3ZoaHN4aHRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTQwNzQsImV4cCI6MjA5NTI5MDA3NH0.19wBDjQ1QE4NuViNDWIBJdA7f_Kmoblr3on-Vv1aZN8';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ============================================================
+// GAME DATA
+// ============================================================
+const CASES = [
+  {
+    id:'thunder-vault',
+    name:'Thunder Vault',
+    icon:'🎁',
+    price:100,
+    tag:'HOT',
+    isNew:false,
+    isPremium:false,
+    color:'#f5a623'
+  },
+  {
+    id:'boom',
+    name:'BOOM!',
+    icon:'💣',
+    price:200,
+    tag:'NEW',
+    isNew:true,
+    isPremium:false,
+    color:'#e74c3c'
+  }
+];
+
+// ── Per-case drop tables ──
+const CASE_DROP_TABLES = {
+  'thunder-vault': [
+    {gold:10,    chance:0.80,          rarity:'common',    rarityColor:'#9fa8a3', icon:'🪙', name:'10 Gold'},
+    {gold:100,   chance:0.10,          rarity:'uncommon',  rarityColor:'#2ecc71', icon:'🪙', name:'100 Gold'},
+    {gold:500,   chance:0.05,          rarity:'rare',      rarityColor:'#3498db', icon:'🪙', name:'500 Gold'},
+    {gold:1000,  chance:0.04,          rarity:'epic',      rarityColor:'#9b59b6', icon:'🪙', name:'1,000 Gold'},
+    {gold:10000, chance:0.01,          rarity:'legendary', rarityColor:'#ffd700', icon:'💎', name:'10,000 Gold'},
+  ],
+  'boom': [
+    // Smoke Grenade  — 80%   — 50G
+    {gold:50,     chance:0.80,          rarity:'common',    rarityColor:'#9fa8a3', icon:'💨', name:'Smoke Grenade',   skin:'smoke'},
+    // Grenade        — 10%   — 550G
+    {gold:550,    chance:0.10,          rarity:'uncommon',  rarityColor:'#2ecc71', icon:'💣', name:'Grenade',          skin:'grenade'},
+    // Thermite       — 8%    — 620G
+    {gold:620,    chance:0.08,          rarity:'rare',      rarityColor:'#3498db', icon:'🔥', name:'Thermite Grenade', skin:'thermite'},
+    // Molotov        — 1.99% — 1,656G
+    {gold:1656,   chance:0.0199,        rarity:'epic',      rarityColor:'#9b59b6', icon:'🍾', name:'Molotov',          skin:'molotov'},
+    // Flash          — 0.0000001% — 100,000G
+    {gold:100000, chance:0.000000001,   rarity:'legendary', rarityColor:'#ffd700', icon:'⚡', name:'Flash Grenade',    skin:'flash'},
+  ],
+};
+
+// Active drop table — set when a case is opened
+let DROP_TABLE = CASE_DROP_TABLES['thunder-vault'];
+
+// Active case id
+let activeCaseId = 'thunder-vault';
+
+// Reel pool built dynamically from DROP_TABLE
+function buildReelPool(){
+  // Build a weighted pool of ~100 slots
+  const pool = [];
+  DROP_TABLE.forEach((drop, idx) => {
+    const slots = Math.max(1, Math.round(drop.chance * 100));
+    for(let i=0;i<slots;i++) pool.push(idx);
+  });
+  return pool;
+}
+
+let REEL_POOL = buildReelPool();
+
+// Withdraw orders: must buy USP Corrode at this Gold price
+const WITHDRAW_ORDERS = [
+  {gold:100,   price:125.6,   label:'100G'},
+  {gold:500,   price:625.6,   label:'500G'},
+  {gold:1000,  price:1250.6,  label:'1,000G'},
+  {gold:10000, price:12500.6, label:'10,000G'},
+];
+
+const CASE_PRICE = 100;
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  user: null,
+  balance: 0,
+  inventory: [],
+  transactions: [],
+  withdrawals: [],
+  casesOpened: 0,
+  totalGoldWon: 0,
+  lastResult: null,
+  lastResultId: null,
+  isSpinning: false,
+};
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded',()=>{
+  loadState();       // restores game data from localStorage
+  renderCases();
+  buildReel();
+  buildMarquee();
+  buildPackages();
+  animateStats();
+  renderDropTable(); // populate drop table with default case
+  // Auth state is handled by sb.auth.onAuthStateChange above
+});
+
+function loadState(){
+  const saved = localStorage.getItem('mondrop_state');
+  if(saved){
+    try {
+      const parsed = JSON.parse(saved);
+      // Only restore game data, not user — Supabase handles that
+      state.balance      = parsed.balance      ?? 0;
+      state.inventory    = parsed.inventory    ?? [];
+      state.transactions = parsed.transactions ?? [];
+      state.withdrawals  = parsed.withdrawals  ?? [];
+      state.casesOpened  = parsed.casesOpened  ?? 0;
+      state.totalGoldWon = parsed.totalGoldWon ?? 0;
+    } catch(e){}
+  }
+}
+
+// ── Supabase Auth Listener ──
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user) {
+    const profile = await fetchOrCreateProfile(session.user);
+    onLogin(profile, false);
+  } else {
+    onLogout();
+  }
+});
+
+// ── On page load, restore session ──
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    const profile = await fetchOrCreateProfile(session.user);
+    onLogin(profile, false);
+  }
+})();
+
+async function fetchOrCreateProfile(authUser) {
+  // Try to load saved game state keyed to this user
+  const key = 'mondrop_state_' + authUser.id;
+  const saved = localStorage.getItem(key);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state.balance      = parsed.balance      ?? 0;
+      state.inventory    = parsed.inventory    ?? [];
+      state.transactions = parsed.transactions ?? [];
+      state.withdrawals  = parsed.withdrawals  ?? [];
+      state.casesOpened  = parsed.casesOpened  ?? 0;
+      state.totalGoldWon = parsed.totalGoldWon ?? 0;
+    } catch(e){}
+  }
+  const meta = authUser.user_metadata || {};
+  return {
+    id:       authUser.id,
+    email:    authUser.email,
+    username: meta.username || meta.full_name || meta.name || authUser.email.split('@')[0],
+    userId:   'MD' + authUser.id.slice(0,6).toUpperCase(),
+  };
+}
+
+function saveState(){
+  if (!state.user) return;
+  const key = 'mondrop_state_' + state.user.id;
+  const toSave = {
+    balance:      state.balance,
+    inventory:    state.inventory,
+    transactions: state.transactions,
+    withdrawals:  state.withdrawals || [],
+    casesOpened:  state.casesOpened,
+    totalGoldWon: state.totalGoldWon,
+  };
+  localStorage.setItem(key, JSON.stringify(toSave));
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.drawer-nav-item').forEach(a=>a.classList.remove('active'));
+  const pageEl = document.getElementById('page-'+page);
+  if(!pageEl) return;
+  pageEl.classList.add('active');
+  const navEl = document.getElementById('nav-'+page);
+  if(navEl) navEl.classList.add('active');
+  const dnavEl = document.getElementById('dnav-'+page);
+  if(dnavEl) dnavEl.classList.add('active');
+  window.scrollTo(0,0);
+  if(page === 'profile') renderProfile();
+  if(page === 'open') buildReel();
+}
+
+function toggleMobileNav(){
+  const drawer = document.getElementById('mobileDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const burger = document.getElementById('navBurger');
+  const isOpen = drawer.classList.contains('open');
+  if(isOpen){
+    closeMobileNav();
+  } else {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    burger.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+}
+
+function closeMobileNav(){
+  document.getElementById('mobileDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('navBurger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function toggleAccountMenu(){
+  const wrap = document.getElementById('accountMenuWrap');
+  wrap.classList.toggle('open');
+}
+
+function closeAccountMenu(){
+  document.getElementById('accountMenuWrap').classList.remove('open');
+}
+
+// Close account menu on outside click
+document.addEventListener('click', function(e){
+  const wrap = document.getElementById('accountMenuWrap');
+  if(wrap && !wrap.contains(e.target)){
+    wrap.classList.remove('open');
+  }
+});
+
+// ============================================================
+// AUTH — Supabase
+// ============================================================
+
+// ── Helpers ──
+function authSetLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.textContent = loading ? 'PLEASE WAIT...' : btn.dataset.label || btn.textContent;
+}
+function showAuthError(modalName, msg) {
+  let el = document.getElementById(modalName + 'AuthError');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = modalName + 'AuthError';
+    el.style.cssText = 'background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.35);border-radius:8px;padding:10px 14px;font-size:0.85rem;color:#e74c3c;margin-bottom:12px;text-align:center';
+    const modal = document.querySelector('#' + modalName + 'Modal .modal');
+    const firstBtn = modal.querySelector('.btn-full, .btn-amber');
+    if (firstBtn) modal.insertBefore(el, firstBtn);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearAuthError(modalName) {
+  const el = document.getElementById(modalName + 'AuthError');
+  if (el) el.style.display = 'none';
+}
+
+// ── Sign In ──
+async function handleLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showAuthError('login', 'Please fill in all fields.'); return; }
+  clearAuthError('login');
+  const btn = document.querySelector('#loginModal .btn-full');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'SIGNING IN...';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+
+  btn.disabled = false; btn.textContent = orig;
+  if (error) { showAuthError('login', error.message); return; }
+  closeModal('login');
+  showToast('Welcome back! 👋', 'success');
+}
+
+// ── Sign Up ──
+async function handleSignup() {
+  const username = document.getElementById('signupUsername').value.trim();
+  const email    = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  if (!username || !email || !password) { showAuthError('signup', 'Please fill in all fields.'); return; }
+  if (password.length < 8) { showAuthError('signup', 'Password must be at least 8 characters.'); return; }
+  clearAuthError('signup');
+  const btn = document.querySelector('#signupModal .btn-full');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'CREATING ACCOUNT...';
+
+  const { data, error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { username } }
+  });
+
+  btn.disabled = false; btn.textContent = orig;
+  if (error) { showAuthError('signup', error.message); return; }
+
+  // Give welcome bonus on first sign-up
+  state.balance      = CASE_PRICE;
+  state.transactions = [{ type:'topup', desc:'Welcome Gift — 1 Free Case', amount:CASE_PRICE, date:new Date().toISOString() }];
+  state.inventory    = [];
+  state.casesOpened  = 0;
+  state.totalGoldWon = 0;
+  state.withdrawals  = [];
+
+  closeModal('signup');
+  // If email confirmation is on, tell them; otherwise onAuthStateChange fires login
+  if (data.user && !data.session) {
+    showToast('Check your email to confirm your account! 📧', 'info');
+  } else {
+    showToast('Account created! You got 1 FREE case! 🎁', 'success');
+  }
+}
+
+// ── Google OAuth ──
+async function handleGoogleAuth() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+  if (error) showToast('Google sign-in error: ' + error.message, 'error');
+}
+
+// ── Password Reset (added to login modal) ──
+async function handleForgotPassword() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { showAuthError('login', 'Enter your email above first.'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+  if (error) showAuthError('login', error.message);
+  else showToast('Password reset link sent! Check your inbox. 📧', 'success');
+}
+
+function onLogin(user, save){
+  state.user = user;
+  document.getElementById('loginBtn').style.display='none';
+  document.getElementById('signupBtn').style.display='none';
+  document.getElementById('navBalance').style.display='none';
+  const wrap = document.getElementById('accountMenuWrap');
+  wrap.style.display='flex';
+  const initial = (user.username||'P').charAt(0).toUpperCase();
+  document.getElementById('accountAvatarSm').textContent = initial;
+  document.getElementById('accountMenuUsername').textContent = user.username||'Player';
+  document.getElementById('acctDropName').textContent = user.username||'Player';
+  document.getElementById('acctDropEmail').textContent = user.email||'';
+  document.getElementById('acctDropId').textContent = 'ID: '+(user.userId||'');
+  updateNavBalance();
+  document.getElementById('drawerAvatar').textContent = initial;
+  document.getElementById('drawerUsername').textContent = user.username||'Player';
+  document.getElementById('drawerUserId').textContent = 'ID: '+(user.userId||'');
+  document.getElementById('drawerAuthBtns').style.display='none';
+  document.getElementById('drawerLogoutBtn').style.display='block';
+  document.getElementById('drawerUser').style.display='block';
+  updateDrawerBalance();
+  if(save) saveState();
+}
+
+async function logout(){
+  await sb.auth.signOut();
+  // onAuthStateChange → onLogout() handles UI reset
+  closeAccountMenu();
+  navigate('home');
+  showToast('Logged out', 'info');
+}
+
+function onLogout(){
+  state.user     = null;
+  state.balance  = 0;
+  state.inventory    = [];
+  state.transactions = [];
+  state.withdrawals  = [];
+  state.casesOpened  = 0;
+  state.totalGoldWon = 0;
+  document.getElementById('loginBtn').style.display  = 'block';
+  document.getElementById('signupBtn').style.display = 'block';
+  document.getElementById('accountMenuWrap').style.display = 'none';
+  document.getElementById('drawerAuthBtns').style.display  = 'flex';
+  document.getElementById('drawerLogoutBtn').style.display = 'none';
+  document.getElementById('drawerUser').style.display      = 'none';
+}
+
+function updateNavBalance(){
+  const bal = formatNum(state.balance)+' G';
+  document.getElementById('navBalance').textContent = bal;
+  document.getElementById('acctDropBalance').textContent = bal;
+  updateDrawerBalance();
+}
+
+function updateDrawerBalance(){
+  document.getElementById('drawerBalance').textContent = formatNum(state.balance)+' G';
+}
+
+// ============================================================
+// CASES RENDERING
+// ============================================================
+function renderCases(){
+  const featured = document.getElementById('featuredCasesGrid');
+  const all = document.getElementById('allCasesGrid');
+  if(featured) featured.innerHTML = CASES.map(caseCard).join('');
+  if(all) all.innerHTML = CASES.map(caseCard).join('');
+}
+
+function caseCard(c){
+  return `<div class="case-card" onclick="openCasePage('${c.id}')">
+    ${c.tag?`<div class="case-card-badge">${c.tag}</div>`:''}
+    <div class="case-card-img">
+      <div class="case-card-icon">${c.icon}</div>
+    </div>
+    <div class="case-card-body">
+      <div class="case-card-name">${c.name}</div>
+      <div class="case-card-price">⚡ ${formatNum(c.price)} G</div>
+    </div>
+  </div>`;
+}
+
+function openCasePage(id){
+  activeCaseId = id;
+  const caseData = CASES.find(c=>c.id===id);
+  if(!caseData) return;
+
+  // Swap drop table + reel pool
+  DROP_TABLE = CASE_DROP_TABLES[id] || CASE_DROP_TABLES['thunder-vault'];
+  REEL_POOL  = buildReelPool();
+
+  // Update open-page header
+  document.querySelector('.open-case-thumb').textContent  = caseData.icon;
+  document.querySelector('.open-case-details .case-title').textContent = caseData.name.toUpperCase();
+  document.querySelector('.open-case-details .case-price').textContent = '⚡ '+formatNum(caseData.price)+' G';
+  document.querySelector('#page-open p').innerHTML =
+    'Each opening costs <span style="color:var(--gold);font-family:\'Share Tech Mono\',monospace">'+formatNum(caseData.price)+' G</span>';
+
+  // Rebuild drop table UI
+  renderDropTable();
+
+  navigate('open');
+  buildReel();
+}
+
+function filterCases(type, el){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  let filtered = CASES;
+  if(type==='new') filtered = CASES.filter(c=>c.isNew||c.tag);
+  else if(type==='budget') filtered = CASES.filter(c=>c.price<3000);
+  else if(type==='premium') filtered = CASES.filter(c=>c.isPremium);
+  document.getElementById('allCasesGrid').innerHTML = filtered.length ? filtered.map(caseCard).join('') : '<p style="color:var(--muted);padding:2rem">No cases match this filter.</p>';
+}
+
+function sortCases(val){
+  let sorted = [...CASES];
+  if(val==='price-asc') sorted.sort((a,b)=>a.price-b.price);
+  else if(val==='price-desc') sorted.sort((a,b)=>b.price-a.price);
+  else if(val==='name') sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('allCasesGrid').innerHTML = sorted.map(caseCard).join('');
+}
+
+// ============================================================
+// MARQUEE
+// ============================================================
+const MARQUEE_USERS = ['Shadow','GoldenX','Thunder','NightOwl','BladeRunner','FireStorm','IceKing','MongoWarrior','UlaanGamer','SteppeKnight'];
+const MARQUEE_DROPS = [
+  {gold:100000,name:'Flash Grenade',   case:'BOOM!',        rarity:'legendary',big:true},
+  {gold:1656,  name:'Molotov',         case:'BOOM!',        rarity:'epic',     big:false},
+  {gold:620,   name:'Thermite',        case:'BOOM!',        rarity:'rare',     big:false},
+  {gold:550,   name:'Grenade',         case:'BOOM!',        rarity:'uncommon', big:false},
+  {gold:50,    name:'Smoke Grenade',   case:'BOOM!',        rarity:'common',   big:false},
+  {gold:10000, name:'10,000 Gold',     case:'Thunder Vault',rarity:'legendary',big:true},
+  {gold:1000,  name:'1,000 Gold',      case:'Thunder Vault',rarity:'epic',     big:false},
+  {gold:500,   name:'500 Gold',        case:'Thunder Vault',rarity:'rare',     big:false},
+  {gold:100,   name:'100 Gold',        case:'Thunder Vault',rarity:'uncommon', big:false},
+  {gold:10,    name:'10 Gold',         case:'Thunder Vault',rarity:'common',   big:false},
+];
+
+function buildMarquee(){
+  const track = document.getElementById('marqueeTrack');
+  let items = '';
+  for(let i=0;i<40;i++){
+    const user = MARQUEE_USERS[Math.floor(Math.random()*MARQUEE_USERS.length)];
+    const drop = MARQUEE_DROPS[Math.floor(Math.random()*MARQUEE_DROPS.length)];
+    const cl = drop.big ? 'marquee-item big-win' : 'marquee-item';
+    items += `<div class="${cl}">
+      <span class="m-user">${user}</span>
+      <span class="m-dot">•</span>
+      <span class="m-gold">${formatNum(drop.gold)} G</span>
+      <span class="m-dot">•</span>
+      <span style="font-size:0.75rem;color:var(--muted)">${drop.case}</span>
+    </div>`;
+  }
+  track.innerHTML = items + items;
+}
+
+// ============================================================
+// REEL
+// ============================================================
+const REEL_ITEM_WIDTH = 130; // px
+const REEL_TOTAL_ITEMS = 60;
+
+function buildReel(){
+  const track = document.getElementById('reelTrack');
+  track.style.transition='none';
+  track.style.transform='translateX(0)';
+  const pool = buildReelPool();
+  let html='';
+  for(let i=0;i<REEL_TOTAL_ITEMS;i++){
+    const idx = pool[Math.floor(Math.random()*pool.length)];
+    const drop = DROP_TABLE[idx];
+    html += reelItem(drop);
+  }
+  track.innerHTML = html;
+}
+
+function reelItem(drop){
+  return `<div class="reel-item ${drop.rarity}">
+    <div class="reel-item-icon">${drop.icon}</div>
+    <div class="reel-item-amount">${drop.name || formatNum(drop.gold)+'G'}</div>
+    <div class="reel-item-label">${drop.rarity}</div>
+  </div>`;
+}
+
+function renderDropTable(){
+  const table = document.getElementById('dynamicDropTable');
+  if(!table) return;
+  const rarityColors = {common:'#9fa8a3',uncommon:'#2ecc71',rare:'#3498db',epic:'#9b59b6',legendary:'#ffd700'};
+  table.innerHTML = DROP_TABLE.slice().reverse().map(d=>{
+    const pct = d.chance < 0.000001
+      ? d.chance.toExponential(1)+'%'
+      : (d.chance*100).toFixed(d.chance < 0.01 ? 4 : 0)+'%';
+    const barWidth = Math.max(0.5, d.chance * 100);
+    return `<div class="drop-row">
+      <div>
+        <div class="drop-gold" style="color:${d.rarityColor}">${d.icon} ${d.name} <span style="font-size:0.7rem;opacity:0.6">(${d.rarity})</span></div>
+        <div class="drop-bar" style="background:${d.rarityColor};width:${barWidth}%"></div>
+      </div>
+      <div style="text-align:right">
+        <div class="drop-pct" style="color:${d.rarityColor}">${pct}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--gold)">${formatNum(d.gold)} G</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// CASE OPENING
+// ============================================================
+function rollDrop(){
+  const r = Math.random();
+  let cumulative = 0;
+  for(const drop of DROP_TABLE){
+    cumulative += drop.chance;
+    if(r < cumulative) return drop;
+  }
+  return DROP_TABLE[0];
+}
+
+function openCase(){
+  if(state.isSpinning) return;
+  if(!state.user){openModal('login');showToast('Log in to open cases','info');return;}
+  const caseData = CASES.find(c=>c.id===activeCaseId);
+  const casePrice = caseData ? caseData.price : CASE_PRICE;
+  if(state.balance < casePrice){
+    showToast('Not enough Gold. Top up to continue!','error');
+    navigate('payment');
+    return;
+  }
+  state.balance -= casePrice;
+  state.casesOpened++;
+  updateNavBalance();
+  const result = rollDrop();
+  state.lastResult = result;
+  state.lastResultId = null; // will be set after addToInventory
+  state.isSpinning = true;
+  document.getElementById('resultDisplay').style.display='none';
+  document.getElementById('subControls').style.display='none';
+  document.getElementById('btnOpen').disabled=true;
+  buildReelWithResult(result, ()=>{
+    const newId = addToInventory(result);
+    state.lastResultId = newId;
+    revealResult(result);
+    addTransaction('open',(caseData?caseData.name:'Thunder Vault')+' — '+formatNum(result.gold)+' Gold',-casePrice);
+    state.totalGoldWon += result.gold;
+    saveState();
+    state.isSpinning = false;
+    document.getElementById('btnOpen').disabled=false;
+    document.getElementById('subControls').style.display='flex';
+  });
+}
+
+function buildReelWithResult(result, callback){
+  const track = document.getElementById('reelTrack');
+  const window_width = document.querySelector('.reel-window').offsetWidth;
+  const centerOffset = Math.floor(window_width / 2 / REEL_ITEM_WIDTH);
+  const landingIndex = REEL_TOTAL_ITEMS - 6; // land near end
+
+  const pool = buildReelPool();
+  // Fill reel
+  let html='';
+  for(let i=0;i<REEL_TOTAL_ITEMS;i++){
+    let drop;
+    if(i === landingIndex){
+      drop = result;
+    } else {
+      const idx = pool[Math.floor(Math.random()*pool.length)];
+      drop = DROP_TABLE[idx];
+    }
+    html += reelItem(drop);
+  }
+  track.innerHTML = html;
+  track.style.transition='none';
+  track.style.transform='translateX(0)';
+
+  // Force reflow
+  void track.offsetWidth;
+
+  // Calculate target position
+  const targetX = -(landingIndex * REEL_ITEM_WIDTH) + (window_width/2) - (REEL_ITEM_WIDTH/2);
+  const startX = 0;
+  const spinExtra = -(REEL_TOTAL_ITEMS * REEL_ITEM_WIDTH * 0.3); // extra scroll for drama
+
+  // Animate
+  track.style.transition=`transform 5s cubic-bezier(0.12,0.8,0.2,1)`;
+  track.style.transform=`translateX(${targetX}px)`;
+
+  setTimeout(callback, 5200);
+}
+
+function revealResult(result){
+  const display = document.getElementById('resultDisplay');
+  const card = document.getElementById('resultCard');
+  const icon = document.getElementById('resultIcon');
+  const amount = document.getElementById('resultAmount');
+  const rarity = document.getElementById('resultRarity');
+
+  icon.textContent   = result.icon;
+  amount.textContent = (result.name || formatNum(result.gold)+' GOLD');
+  rarity.textContent = result.rarity.toUpperCase()+' — '+formatNum(result.gold)+' G';
+  rarity.style.color = result.rarityColor;
+
+  card.className='result-card';
+  if(result.rarity==='legendary'){
+    card.classList.add('legendary-result');
+    triggerParticles();
+    flashScreen(result.rarityColor);
+    showToast('🎉 LEGENDARY DROP! '+formatNum(result.gold)+' Gold!','success');
+  } else if(result.rarity==='epic'){
+    flashScreen(result.rarityColor);
+  } else {
+    showToast('You won '+formatNum(result.gold)+' Gold!','info');
+  }
+
+  display.style.display='block';
+  updateNavBalance();
+  renderProfile();
+}
+
+function flashScreen(color){
+  const overlay = document.getElementById('flashOverlay');
+  overlay.style.background = color;
+  overlay.classList.remove('active');
+  void overlay.offsetWidth;
+  overlay.classList.add('active');
+}
+
+function triggerParticles(){
+  const el = document.getElementById('particles');
+  const canvas = document.getElementById('particleCanvas');
+  el.style.display='block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  
+  const particles = [];
+  for(let i=0;i<120;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      vx: (Math.random()-0.5)*8,
+      vy: (Math.random()-0.5)*8-3,
+      size: Math.random()*6+2,
+      color: ['#ffd700','#f5a623','#fff','#ffb300'][Math.floor(Math.random()*4)],
+      life:1,
+      decay: Math.random()*0.02+0.01,
+    });
+  }
+
+  function frame(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.life-=p.decay;
+      ctx.save();
+      ctx.globalAlpha=Math.max(0,p.life);
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+    particles.splice(0,particles.length,...particles.filter(p=>p.life>0));
+    if(particles.length>0) requestAnimationFrame(frame);
+    else el.style.display='none';
+  }
+  requestAnimationFrame(frame);
+}
+
+function addToInventory(drop){
+  const id = Date.now()+Math.random();
+  state.inventory.push({
+    id,
+    name:       drop.name || formatNum(drop.gold)+' Gold',
+    gold:       drop.gold,
+    rarity:     drop.rarity,
+    rarityColor:drop.rarityColor,
+    icon:       drop.icon,
+    caseId:     activeCaseId,
+    date:       new Date().toISOString(),
+  });
+  return id;
+}
+
+function sellLastItem(){
+  if(!state.lastResult||!state.lastResultId){showToast('Nothing to sell','info');return;}
+  const item = state.inventory.find(i=>i.id===state.lastResultId);
+  if(!item){showToast('Item already sold','info');return;}
+  state.inventory = state.inventory.filter(i=>i.id!==state.lastResultId);
+  state.balance += item.gold;
+  addTransaction('sell','Sold '+formatNum(item.gold)+' Gold',item.gold);
+  state.lastResultId = null; // prevent double-sell
+  updateNavBalance();
+  saveState();
+  showToast('Item sold for '+formatNum(item.gold)+' Gold 💰','success');
+  document.getElementById('resultDisplay').style.display='none';
+  document.getElementById('subControls').style.display='none';
+}
+
+function sellItem(id){
+  const item = state.inventory.find(i=>String(i.id)===String(id));
+  if(!item) return;
+  state.inventory = state.inventory.filter(i=>String(i.id)!==String(id));
+  state.balance += item.gold;
+  addTransaction('sell','Sold '+formatNum(item.gold)+' Gold',item.gold);
+  updateNavBalance();
+  renderInventory();
+  saveState();
+  showToast('Sold for '+formatNum(item.gold)+' Gold 💰','success');
+}
+function renderProfile(){
+  if(!state.user){
+    document.getElementById('profileLoginNotice').style.display='flex';
+    document.getElementById('profileContent').style.display='none';
+    return;
+  }
+  document.getElementById('profileLoginNotice').style.display='none';
+  document.getElementById('profileContent').style.display='block';
+  const u = state.user;
+  document.getElementById('profileUsername').textContent = u.username;
+  document.getElementById('profileEmail').textContent = u.email;
+  document.getElementById('profileUserId').textContent = 'ID: '+(u.userId||'');
+  document.getElementById('profileAvatar').textContent = u.username.charAt(0).toUpperCase();
+  document.getElementById('profileBalance').textContent = formatNum(state.balance);
+  document.getElementById('profileCasesOpened').textContent = formatNum(state.casesOpened);
+  document.getElementById('profileTotalGold').textContent = formatNum(state.totalGoldWon);
+  renderInventory();
+  renderTransactions();
+  renderWithdrawHistory();
+}
+
+// ============================================================
+// PROFILE
+// ============================================================
+
+function renderInventory(){
+  const grid = document.getElementById('inventoryGrid');
+  const inv = state.inventory;
+  document.getElementById('invCount').textContent = inv.length+' items';
+  const totalGold = inv.reduce((s,i)=>s+i.gold,0);
+  document.getElementById('invTotalValue').textContent = formatNum(totalGold);
+
+  if(!inv.length){
+    grid.innerHTML='<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:3rem;font-size:0.9rem">No items yet. Open some cases! 🎁</div>';
+    return;
+  }
+
+  grid.innerHTML = inv.slice().reverse().map(item=>`
+    <div class="inv-item ${item.rarity}" onclick="sellItem('${item.id}')">
+      <div class="inv-item-img">${item.icon}</div>
+      <div class="inv-item-info">
+        <div style="font-size:0.75rem;color:var(--text);font-weight:600;margin-bottom:2px">${item.name||''}</div>
+        <div class="inv-item-gold">${formatNum(item.gold)} G</div>
+        <div class="inv-item-rarity">${item.rarity}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function sellItem(id){
+  const item = state.inventory.find(i=>i.id==id);
+  if(!item) return;
+  state.inventory = state.inventory.filter(i=>i.id!=id);
+  state.balance += item.gold;
+  addTransaction('sell','Sold '+formatNum(item.gold)+' Gold',item.gold);
+  updateNavBalance();
+  renderInventory();
+  saveState();
+  showToast('Sold for '+formatNum(item.gold)+' Gold 💰','success');
+}
+
+// ============================================================
+// SELL ALL & WITHDRAW
+// ============================================================
+function sellAll(){
+  if(!state.inventory.length){showToast('Nothing to sell','info');return;}
+  const total = state.inventory.reduce((s,i)=>s+i.gold,0);
+  state.balance += total;
+  addTransaction('sell','Sold All Items',total);
+  state.inventory = [];
+  state.lastResultId = null;
+  updateNavBalance();
+  renderInventory();
+  saveState();
+  showToast('All items sold for '+formatNum(total)+' Gold! 💰','success');
+}
+
+// Withdraw: user picks a tier → must order USP Corrode at that price
+function withdrawAll(){
+  if(!state.user){openModal('login');return;}
+  openModal('withdraw');
+  renderWithdrawOptions();
+}
+
+function renderWithdrawOptions(){
+  const container = document.getElementById('withdrawOptionsContainer');
+  const totalGold = state.balance;
+  container.innerHTML = WITHDRAW_ORDERS.map(o=>`
+    <div class="withdraw-option ${totalGold>=o.gold?'':'disabled'}" onclick="${totalGold>=o.gold?`selectWithdraw(${o.gold},${o.price})`:'void 0'}">
+      <div class="wo-left">
+        <div class="wo-gold">${o.label}</div>
+        <div class="wo-note">Order USP "Corrode" at <strong style="color:var(--gold)">${o.price}G</strong></div>
+      </div>
+      <div class="wo-status">${totalGold>=o.gold?'✅ Available':'🔒 Need more Gold'}</div>
+    </div>
+  `).join('');
+}
+
+let selectedWithdraw = null;
+function selectWithdraw(gold, price){
+  selectedWithdraw = {gold, price};
+  document.getElementById('withdrawStep1').style.display='none';
+  document.getElementById('withdrawStep2').style.display='block';
+  document.getElementById('withdrawOrderGold').textContent = formatNum(gold)+' Gold';
+  document.getElementById('withdrawOrderPrice').textContent = price+' Gold';
+  document.getElementById('withdrawOrderNote').textContent = 'You must place a buy order for USP "Corrode" at exactly '+price+'G on the market, then upload a screenshot below.';
+}
+
+function submitWithdraw(){
+  const fileInput = document.getElementById('withdrawProofFile');
+  const file = fileInput?.files?.[0];
+  if(!file){showToast('Please upload a screenshot of your order','error');return;}
+  if(!selectedWithdraw){return;}
+  // Record withdrawal request
+  const wd = {
+    id: Date.now(),
+    gold: selectedWithdraw.gold,
+    price: selectedWithdraw.price,
+    fileName: file.name,
+    status: 'pending',
+    date: new Date().toISOString(),
+  };
+  if(!state.withdrawals) state.withdrawals = [];
+  state.withdrawals.unshift(wd);
+  addTransaction('withdraw','Withdraw '+formatNum(selectedWithdraw.gold)+' Gold (pending review)',-selectedWithdraw.gold);
+  state.balance -= selectedWithdraw.gold;
+  updateNavBalance();
+  saveState();
+  closeModal('withdraw');
+  showToast('Withdrawal submitted! We will review your order screenshot. 📋','success');
+  selectedWithdraw = null;
+  renderProfile();
+}
+
+function renderWithdrawHistory(){
+  const container = document.getElementById('withdrawHistoryList');
+  if(!container) return;
+  const list = state.withdrawals||[];
+  if(!list.length){
+    container.innerHTML='<div style="color:var(--muted);text-align:center;padding:2rem;font-size:0.9rem">No withdrawal history yet.</div>';
+    return;
+  }
+  container.innerHTML = list.map(w=>`
+    <div class="wd-row">
+      <div>
+        <div style="font-weight:700;color:var(--gold)">${formatNum(w.gold)} Gold</div>
+        <div style="font-size:0.8rem;color:var(--muted)">${new Date(w.date).toLocaleDateString()} · Order at ${w.price}G</div>
+      </div>
+      <div class="wd-status ${w.status}">${w.status.toUpperCase()}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// TRANSACTIONS
+// ============================================================
+function addTransaction(type, desc, amount){
+  state.transactions.unshift({
+    type, desc, amount, date:new Date().toISOString()
+  });
+  if(state.transactions.length > 50) state.transactions = state.transactions.slice(0,50);
+}
+
+function renderTransactions(){
+  const tbody = document.getElementById('txHistory');
+  if(!state.transactions.length){
+    tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No transactions yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.transactions.slice(0,20).map(tx=>`
+    <tr>
+      <td><span class="tx-type ${tx.type}">${tx.type.toUpperCase()}</span></td>
+      <td>${tx.desc}</td>
+      <td class="tx-amount ${tx.amount>=0?'pos':'neg'}">${tx.amount>=0?'+':''}${formatNum(tx.amount)} G</td>
+      <td style="color:var(--muted);font-size:0.85rem">${new Date(tx.date).toLocaleDateString()}</td>
+    </tr>
+  `).join('');
+}
+
+// ============================================================
+// PAYMENT / DEPOSIT
+// ============================================================
+const PACKAGES = [
+  {gold:100,   togrog:5000,   icon:'🪙', label:null},
+  {gold:200,   togrog:10000,  icon:'🥈', label:null},
+  {gold:300,   togrog:13000,  icon:'🥇', label:'POPULAR'},
+  {gold:500,   togrog:17000,  icon:'💎', label:null},
+  {gold:1000,  togrog:30000,  icon:'👑', label:'BEST VALUE'},
+];
+
+function buildPackages(){
+  const grid = document.getElementById('packageGrid');
+  if(!grid) return;
+  grid.innerHTML = PACKAGES.map(p=>`
+    <div class="pkg-card ${p.label?'popular':''}" onclick="selectPackage(${p.gold},${p.togrog})">
+      ${p.label?`<div class="pkg-badge">${p.label}</div>`:''}
+      <div class="pkg-icon">${p.icon}</div>
+      <div class="pkg-mnt">${formatNum(p.gold)} G</div>
+      <div class="pkg-togrog">₮${formatNum(p.togrog)}</div>
+      <div class="pkg-rate">${(p.togrog/p.gold).toFixed(0)}₮ / Gold</div>
+    </div>
+  `).join('');
+}
+
+function selectPackage(gold, togrog){
+  if(!state.user){openModal('login');showToast('Log in to top up','info');return;}
+  openModal('depositQR');
+  document.getElementById('depositGoldAmt').textContent = formatNum(gold)+' Gold';
+  document.getElementById('depositTogrogAmt').textContent = '₮'+formatNum(togrog);
+  document.getElementById('depositUserId').textContent = state.user?.userId||'N/A';
+  document.getElementById('depositNote').textContent = 'MonDrop ID: '+(state.user?.userId||'');
+}
+
+function openTopupPage(){
+  navigate('payment');
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(name){
+  document.getElementById(name+'Modal').classList.add('open');
+  document.getElementById(name+'Modal').style.display='flex';
+}
+function closeModal(name){
+  document.getElementById(name+'Modal').classList.remove('open');
+  document.getElementById(name+'Modal').style.display='none';
+}
+function switchModal(from, to){
+  closeModal(from);
+  openModal(to);
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',e=>{
+    if(e.target===overlay){
+      overlay.classList.remove('open');
+      overlay.style.display='none';
+    }
+  });
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(message, type='info'){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className=`toast ${type}`;
+  const icons={'success':'✅','error':'❌','info':'💡'};
+  toast.innerHTML=`<span>${icons[type]||'💡'}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>{
+    toast.style.animation='none';
+    toast.style.opacity='0';
+    toast.style.transition='opacity 0.3s';
+    setTimeout(()=>toast.remove(),300);
+  },3500);
+}
+
+// ============================================================
+// STATS ANIMATION
+// ============================================================
+function animateStats(){
+  const targets = {
+    statCases: 142837,
+    statOnline: 1247,
+    statDrops: 8921,
+  };
+  Object.entries(targets).forEach(([id,target])=>{
+    const el = document.getElementById(id);
+    let current = 0;
+    const step = Math.ceil(target/60);
+    const timer = setInterval(()=>{
+      current = Math.min(current+step,target);
+      el.textContent = formatNum(current);
+      if(current>=target) clearInterval(timer);
+    },30);
+  });
+
+  // Live updates
+  setInterval(()=>{
+    const el = document.getElementById('statOnline');
+    if(el){
+      const current = parseInt(el.textContent.replace(/,/g,''));
+      const delta = Math.floor(Math.random()*5)-(Math.random()>0.5?2:0);
+      el.textContent = formatNum(Math.max(1000,current+delta));
+    }
+  },3000);
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function formatNum(n){
+  return Math.round(n).toLocaleString('en-US');
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+</script>
+</body>
+</html>
