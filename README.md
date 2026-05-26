@@ -1,2 +1,0 @@
-# MonDrop
-Inspiration of GGSTANDOFF
